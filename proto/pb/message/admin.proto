@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package cp;
+
+option go_package ="./cp;cp";
+
+message AdminCommon {
+  message ListReq {
+    uint32 page = 1;
+    uint32 limit = 2;
+    string search_type = 3;
+    string search_keyword = 4;
+    string order_field = 5;
+    Sort order_sort = 6;
+  };
+
+  // 多级筛选结构
+  message CascadeFilterRes {
+    repeated Option filters = 1;
+
+    message Option {
+      uint32 value = 1;
+      string label = 2;
+      repeated Option children = 3;
+    }
+  };
+
+  enum Sort {
+    SortAsc = 0;
+    SortDesc = 1;
+  }
+
+  enum SqlOperator {
+    // =
+    SqlOperatorEQ = 0;
+    // !=
+    SqlOperatorNE = 1;
+    // >
+    SqlOperatorGT = 2;
+    // >=
+    SqlOperatorGE = 3;
+    // <
+    SqlOperatorLT = 4;
+    // <=
+    SqlOperatorLE = 5;
+    // IN
+    SqlOperatorIn = 6;
+    // NOT IN
+    SqlOperatorNotIn = 7;
+    // FIND_IN_SET
+    SqlOperatorFindInSet = 8;
+    // LIKE %{}%
+    SqlOperatorLike = 9;
+    // LIKE {}%
+    SqlOperatorLikeLeft = 10;
+    // LIKE %{}
+    SqlOperatorLikeRight = 11;
+    // NOT LIKE %{}%
+    SqlOperatorNotLike = 12;
+    // NOT LIKE {}%
+    SqlOperatorNotLikeLeft = 13;
+    // NOT LIKE %{}
+    SqlOperatorNotLikeRight = 14;
+  }
+}

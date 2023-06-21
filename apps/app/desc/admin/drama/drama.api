@@ -1,0 +1,78 @@
+syntax = "v1"
+
+info(
+	title: "有声微服务Api"
+	desc: "有声微服务Api"
+	author: "stark张宇"
+	version: "v0.1"
+)
+
+type (
+	Info {
+		Id                  int64  `json:"id"`
+		Cover               string `json:"cover"`
+		Name                string `json:"name"`
+		Author              string `json:"author"`
+		Category            int64  `json:"category"`
+		CatalogId           int64  `json:"catalog_id"`
+		Nid                 int64  `json:"nid"`
+		ProducerId          int64  `json:"nid"`
+		ProducerName        string `json:"producer_name"`
+		Process             int64  `json:"process"`
+		ShortIntro          string `json:"short_intro"`
+		Intro               string `json:"intro"`
+		TotalPrice          int64  `json:"total_price"`
+		IsPay               int64  `json:"is_pay"`
+		PayIndex            int64  `json:"pay_index"`
+		Price               int64  `json:"price"`
+		DiscountAll         int64  `json:"discount_all"`
+		DiscountAllEtime    string `json:"discount_all_etime"`
+		DiscountSingle      int64  `json:"discount_single"`
+		DiscountSingleEtime string `json:"discount_single_etime"`
+		Status              int64  `json:"status"`
+		ServerDivided       int64  `json:"server_divided"`
+		ProducerDivided     int64  `json:"server_divided"`
+	}
+
+	ShortInfo {
+		Id                  int64  `json:"id"`
+		Cover               string `json:"cover"`
+		Name                string `json:"name"`
+		Author              string `json:"author"`
+		ShortIntro          string `json:"short_intro"`
+		Intro               string `json:"intro"`
+	}
+
+
+	PayType {
+		value int64 `json:"value"`
+		label string `json:"label"`
+	}
+	Producer {
+		id int64 `json:"id"`
+		name string `json:"name"`
+	}
+)
+
+type (
+	RecPosition {
+		Id        int64  `json:"id"`
+		Name      string `json:"name"`       // 标题
+		TempType  int64  `json:"temp_type"`  // 模板类型 1:单排,2:横排,3:竖排
+		TempName  string `json:"temp_name"`
+		Sort      int64  `json:"sort"`       // 排序
+		NovelIds  string `json:"novel_ids"`  // 作品id集合: | 分隔
+		NovelName string `json:"novel_name"`
+		IsDel     int64  `json:"is_del"`     // 0未删除 1已删除
+		CreatedAt string `json:"created_at"` // 创建时间
+		UpdatedAt string `json:"updated_at"` // 更新时间
+	}
+
+	ShortRecPosition {
+		Id        int64  `json:"id"`
+		Name      string `json:"name"`       // 标题
+		TempType  int64  `json:"temp_type"`  // 模板类型 1:单排,2:横排,3:竖排
+		Sort      int64  `json:"sort"`       // 排序
+		List  []ShortInfo `json:"drama_list"`
+	}
+)

@@ -1,0 +1,23 @@
+Name: cpdramaadmin.rpc
+ListenOn: 0.0.0.0:3080
+Mode: dev
+Etcd:
+  Hosts:
+    - 172.23.0.2:2379
+  Key: cpdramaadmin.rpc
+Log:
+  ServiceName: drama-rpc
+  KeepDays: 7
+  Stat: false
+DB:
+  DataSource: work:cp2018csq123456@tcp(59.110.162.133:3306)/cp_audio?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  #DataSource: root:rootroot@tcp(127.0.0.1:3306)/cp_audio?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+
+
+
+
+#172.19.0.4:6379 redis-clusterIp
+SqlCache:
+  - Host: 172.19.0.4:6379
+    Pass:
+    Type: cluster

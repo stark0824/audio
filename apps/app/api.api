@@ -1,0 +1,242 @@
+syntax = "v1"
+
+info(
+	title: "有声微服务Api"
+	desc: "有声微服务Api"
+	author: "stark张宇"
+	version: "v0.1"
+)
+
+type (
+	Req {
+	}
+
+	Resp {
+	}
+
+	DramaInfoRequest {
+		DramaId int `json:"dramaId,default=0"`
+	}
+
+	DramaInfoResp {
+		DramaInfo    Info           `json:"dramaInfo"`
+		CataLog      map[int]string `json:"catalog"`
+		Category     map[int]string `json:"category"`
+		Process      map[int]string `json:"process"`
+		Status       map[int]string `json:"status"`
+		PayType      []PayType      `json:"payType"`
+		ProducerList []Producer     `json:"producerList"`
+	}
+
+	RecommendListReq {
+		Page  int64 `json:"page,default=1"`
+		Limit int64 `json:"limit,default=20"`
+	}
+
+	RecommendListResp {
+		List  []RecPosition `json:"list"`
+		Count int64         `json:"count"`
+	}
+
+	RecommendDataReq {
+		Id       int64  `json:"id"`
+		Name     string `json:"name"`      // 标题
+		NovelIds string `json:"novel_ids"` // 作品id集合: | 分隔
+		Sort     int64  `json:"sort"`      // 排序
+		TempType int64  `json:"temp_type"` // 模板类型 1:单排,2:横排,3:竖排
+	}
+
+	RecommendOpsReq {
+		Id int64 `json:"id"`
+	}
+
+	ShortRecPositionResp {
+		List []ShortRecPosition `json:"list"`
+	}
+
+	ProducerListResp {
+		List   []ProducerList `json:"list"`
+		Status map[int]string `json:"status"`
+	}
+
+	ProducerEditReq {
+		Id     int64  `json:"id,default=0"`
+		Name   string `json:"name,default=''"`
+		Mark   string `json:"mark,default=''"`
+		Status int64  `json:"status,default=0"`
+		Uid    int64  `json:"uid,default=0"`
+	}
+
+	ProducerEditResp {
+		Id int64 `json:"id,default=0"`
+	}
+
+	CollDramaReq {
+		Did    int64  `json:"did,default=0"`
+		Status int64  `json:"status,default=10"`
+		Uid    string `header:"uid,default=''"`
+	}
+
+	CheckCollDramaReq {
+		Did int64  `json:"did,default=0"`
+		Uid string `header:"uid,default=''"`
+	}
+
+	CheckCollDramaResp {
+		Follow int64 `json:"follow"`
+	}
+)
+
+type (
+	ShortInfo {
+		Id         int64  `json:"id"`
+		Cover      string `json:"cover"`
+		Name       string `json:"name"`
+		Author     string `json:"author"`
+		ShortIntro string `json:"short_intro"`
+		Intro      string `json:"intro"`
+	}
+
+	RecPosition {
+		Id        int64  `json:"id"`
+		Name      string `json:"name"`      // 标题
+		TempType  int64  `json:"temp_type"` // 模板类型 1:单排,2:横排,3:竖排
+		TempName  string `json:"temp_name"`
+		Sort      int64  `json:"sort"`      // 排序
+		NovelIds  string `json:"novel_ids"` // 作品id集合: | 分隔
+		NovelName string `json:"novel_name"`
+		IsDel     int64  `json:"is_del"`     // 0未删除 1已删除
+		CreatedAt string `json:"created_at"` // 创建时间
+		UpdatedAt string `json:"updated_at"` // 更新时间
+	}
+
+	ShortRecPosition {
+		Id       int64       `json:"id"`
+		Name     string      `json:"name"`      // 标题
+		TempType int64       `json:"temp_type"` // 模板类型 1:单排,2:横排,3:竖排
+		Sort     int64       `json:"sort"`      // 排序
+		List     []ShortInfo `json:"drama_list"`
+	}
+
+	Info {
+		Id                  int64  `json:"id"`
+		Cover               string `json:"cover"`
+		Name                string `json:"name"`
+		Author              string `json:"author"`
+		Category            int64  `json:"category"`
+		CatalogId           int64  `json:"catalog_id"`
+		Nid                 int64  `json:"nid"`
+		ProducerId          int64  `json:"nid"`
+		ProducerName        string `json:"producer_name"`
+		Process             int64  `json:"process"`
+		ShortIntro          string `json:"short_intro"`
+		Intro               string `json:"intro"`
+		TotalPrice          int64  `json:"total_price"`
+		IsPay               int64  `json:"is_pay"`
+		PayIndex            int64  `json:"pay_index"`
+		Price               int64  `json:"price"`
+		DiscountAll         int64  `json:"discount_all"`
+		DiscountAllEtime    string `json:"discount_all_etime"`
+		DiscountSingle      int64  `json:"discount_single"`
+		DiscountSingleEtime string `json:"discount_single_etime"`
+		Status              int64  `json:"status"`
+		ServerDivided       int64  `json:"server_divided"`
+		ProducerDivided     int64  `json:"server_divided"`
+	}
+
+	PayType {
+		Value int64  `json:"value"`
+		Label string `json:"label"`
+	}
+	Producer {
+		Id   int64  `json:"id"`
+		Name string `json:"name"`
+	}
+
+	ProducerList {
+		Id           int64  `json:"id"`
+		Name         string `json:"name"`
+		Mark         string `json:"mark"`
+		Status       int64  `json:"status"`
+		StatusVal    string `json:"status_val,default=''"`
+		Uid          int64  `json:"uid"`
+		UserNickname string `json:"user_nickname,default=''"`
+		CreatedAt    string `json:"created_time"`
+	}
+)
+
+@server(
+	middleware :AuthMiddleware
+	group: admin
+)
+
+service api {
+	@doc "admin - 有声作品详情"
+	@handler adminDramaInfoHandler
+	get /admin/audio/dramaInfo(DramaInfoRequest) returns (DramaInfoResp)
+	
+	@doc "admin - 有声推荐列表操作"
+	@handler adminRecommendHandler
+	get /admin/audiorec/list(RecommendListReq) returns (RecommendListResp)
+	
+	@doc "admin - 有声推荐编辑操作"
+	@handler adminRecommendEditHandler
+	put /admin/audiorec/edit(RecommendDataReq) returns (Resp)
+	
+	@doc "admin - 有声推荐新增操作"
+	@handler adminRecommendAddHandler
+	put /admin/audiorec/add(RecommendDataReq) returns (Resp)
+	
+	@doc "admin - 有声推荐删除操作"
+	@handler adminRecommendDelHandler
+	delete /admin/audiorec/delete(RecommendOpsReq) returns (Resp)
+	
+	@doc "admin - 有声工作室管理列表"
+	@handler adminProducerListHandler
+	get /admin/audio/producerList(Req) returns (ProducerListResp)
+	
+	@doc "admin - 有声工作室新增/编辑/停用"
+	@handler adminProducerEditHandler
+	post /admin/audio/producerEdit(ProducerEditReq) returns (ProducerEditResp)
+	
+}
+
+@server(
+	middleware :AuthMiddleware
+	group: web
+)
+
+service api {
+	@doc "web - 有声推荐删除操作"
+	@handler webSoundSpecialHandler
+	get /web/home/getSoundSpecial(Req) returns (ShortRecPositionResp)
+	
+	@doc "web - 有声用户收藏"
+	@handler webUsercollDramaHandler
+	post /web/usercoll/drama(CollDramaReq) returns (Resp)
+	
+	@doc "web - 有声用户收藏"
+	@handler webCheckUsercollDramaHandler
+	post /web/usercoll/checkDrama(CheckCollDramaReq) returns (CheckCollDramaResp)
+}
+
+@server(
+	middleware :AuthMiddleware
+	group: api
+)
+
+service api {
+	
+	@doc "api - 有声推荐删除操作"
+	@handler apiSoundSpecialHandler
+	get /api/home/getSoundSpecial(Req) returns (ShortRecPositionResp)
+	
+	@doc "api - 有声用户收藏"
+	@handler apiUsercollDramaHandler
+	post /api/usercoll/drama(CollDramaReq) returns (Resp)
+	
+	@doc "api - 有声用户收藏"
+	@handler apiCheckUsercollDramaHandler
+	post /api/usercoll/checkDrama(CheckCollDramaReq) returns (CheckCollDramaResp)
+	
+}

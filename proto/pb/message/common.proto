@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package cp;
+
+option go_package ="./cp;cp";
+
+message Empty {};
+
+message Url {
+    string path = 1;
+    // 为了匹配前端h5路由，传PageType时需要传额外的匹配h5路由的参数
+    // 例如 PageType为NovelInfo时，前端的路径为：https://www.gongzicp.com/novel-484311.html，
+    // 此时query中的参数需要有小说 id:484311
+    // 注：一般是分享链接时需要这样传
+    map<string, string> query = 2;
+    PageType page_type = 3;
+}
+
+// 页面类型
+enum PageType {
+    // 未知
+    UnKnown = 0;
+    // 登录
+    app_login = 1;
+    // 小说详情
+    app_book_info = 2;
+    // 有声
+    app_drama_info = 3;
+    // 书单
+    app_book_list_info = 4;
+    // 章节
+    app_read_page_transfer = 5;
+    // 动态详情
+    app_fishpond_detail = 6;
+}
+
+message BooleanValue {
+    bool flag = 1;
+}
+
+// SortAsc -- 升序, SortDesc -- 降序
+enum Sort {
+    SortAsc = 0;
+    SortDesc = 1;
+}

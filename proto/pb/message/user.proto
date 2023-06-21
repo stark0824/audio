@@ -1,0 +1,115 @@
+syntax = "proto3";
+
+package cp;
+
+option go_package = "./cp;cp";
+
+message UserCommon {
+  // 用户详情结构，用于空间和个人中心
+  message InfoUser {
+    uint32 uid = 1;
+    // 昵称
+    string nickname = 2;
+    // 头像
+    string avatar = 3;
+    // 勋章
+    string medal = 4;
+    // 挂件
+    string pendant = 5;
+    // 等级
+    uint32 level = 6;
+    // 身份认证
+    Identity identity = 7;
+    // 关注数
+    uint32 follows = 8;
+    // 粉丝数
+    uint32 fans = 9;
+    // 个性签名
+    string sign = 10;
+    // 创作字数
+    uint32 word_number = 11;
+    // 用户关系，当前登录用户与此用户的关系
+    Relation relation = 12;
+    // 用户空间背景
+    string background = 13;
+    // 作者ID，可作为是否是作者的判断依据
+    uint32 aid = 14;
+  }
+
+  // 用户基础结构，用于列表
+  message BasicUser {
+    uint32 uid = 1;
+    // 昵称
+    string nickname = 2;
+    // 头像
+    string avatar = 3;
+    // 勋章
+    string medal = 4;
+    // 挂件
+    string pendant = 5;
+    // 等级
+    uint32 level = 6;
+    // 身份认证
+    Identity identity = 7;
+    // 个性签名
+    string sign = 8;
+  }
+
+  // 用户最简单的结构，用于没有头像的列表
+  message SimpleUser {
+    uint32 uid = 1;
+    // 昵称
+    string nickname = 2;
+  }
+
+  // 用户关系
+  enum Relation {
+    // 没有关系
+    RelationNone = 0;
+    // 关注
+    RelationFollow = 1;
+    // 拉黑
+    RelationBlock = 2;
+    // 自己
+    RelationOwn = 3;
+  }
+
+  // 用户身份认证
+  enum Identity {
+    // 未知
+    IdentityUnknown = 0;
+    // 普通用户
+    IdentityNormal = 1;
+    // 黄V，签约作者，头像带黄色V标，个人空间显示长佩签约作者
+    IdentityYellowV = 2;
+    // 蓝V，官方，头像带蓝色V标，个人空间显示长佩官方账号
+    IdentityBlueV = 3;
+  }
+
+  // 禁言范围
+  enum ForbidTalkRange {
+    // 未知
+    ForbidTalkRangeUnknown = 0;
+    // 评论
+    ForbidTalkRangeComment = 1;
+    // 作品、章节
+    ForbidTalkRangeNovel = 2;
+    // 书单
+    ForbidTalkRangeBook = 3;
+    // 动态
+    ForbidTalkRangeMoment = 4;
+  }
+
+  message BindingInfo {
+    // 手机号，带区号并隐藏中间几位。例如 +86 123****8888
+    string tel = 1;
+    // 邮箱
+    string email = 2;
+    // 微博
+    string weibo = 3;
+    // qq
+    string qq = 4;
+    // 微信
+    string we_chat = 5;
+  }
+}

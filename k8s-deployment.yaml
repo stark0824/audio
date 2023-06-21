@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cp-audio-x
+  labels:
+    app: cp-audio-x
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cp-audio-x
+  template:
+    metadata:
+      labels:
+        app: cp-audio-x
+    spec:
+      containers:
+        - name: cp-audio
+          image: gitlab.gongzicp.com:5050/gongzicp.com/audio/audio:latest
+          imagePullPolicy: Always
+          ports:
+            - name: drama-rpc
+              containerPort: 3080
+              protocol: TCP
+            - name: admin-api
+              containerPort: 2080
+              protocol: TCP
+            - name: api
+              containerPort: 8888
+              protocol: TCP
+          command:
+            - "/bin/sh"
+          args:
+            - "/usr/local/cp-audio/container_start.sh"
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          volumeMounts:
+            - name: "etc"
+              mountPath: "/usr/local/cp-audio/etc"
+
+      volumes:
+        - name: "etc"
+          configMap:
+            name: "cp-audio-x"
+

@@ -1,0 +1,183 @@
+syntax = "proto3";
+
+package cp;
+option go_package = "./drama";
+
+
+service Drama {
+  //后台-有声作品详情
+  rpc DramaInfo(DramaInfoReq) returns(DramaInfoResp);
+
+  //后台 - 全部工作室列表
+  rpc ProducerList(ProducerAllReq) returns(ProducerAllResp);
+  rpc ProducerDict(Req) returns(ProducerDictResp);
+  rpc ProducerEdit(ProducerEditReq) returns(ProducerEditResp);
+
+  //后台 - 有声推荐列表
+  rpc RecPositionList(RecPositionReq) returns(RecPositionResp);
+  rpc RecPositionAdd(RecPositionAddReq) returns(RecPositionOpsResp);
+  rpc RecPositionEdit(RecPositionDataReq) returns(RecPositionOpsResp);
+  rpc RecPositionDel(RecPositionOpsReq) returns(RecPositionOpsResp);
+
+  //公共部分
+  rpc DramaShortList(DramaShortListReq) returns(DramaShortListResp);
+  rpc UserCollDrama(CollDramaReq) returns(Resp);
+  rpc CheckUserCollDrama(CheckCollDramaReq) returns(CheckCollDramaResp);
+}
+
+message Req {
+}
+
+message Resp {
+}
+
+// 作品相关结构体
+message DramaInfoReq {
+  int64 id = 1;
+}
+
+message DramaInfoResp {
+  DramaInfo drama = 1;
+}
+
+message DramaShortListReq {
+  string   ids = 1;
+}
+
+message DramaShortListResp {
+  repeated DramaShort list = 1;
+}
+
+message DramaInfo {
+  int64 id = 1;
+  string cover = 2;
+  string name = 3;
+  string author = 4;
+  int64 category = 5;
+  int64 catalog_id = 6;
+  int64 nid = 7;
+  int64 producer_id = 8;
+  string producer_name = 9;
+  int64 process = 10;
+  string short_intro = 11;
+  string intro = 12;
+  int64 total_price = 13;
+  int64 is_pay = 14;
+  int64 pay_index = 15;
+  int64 price = 16;
+  int64 discount_all = 17;
+  string discount_all_etime = 18;
+  int64 discount_single = 19;
+  string discount_single_etime = 20;
+  int64 status = 21;
+  int64 server_divided = 22;
+  int64 producer_divided = 23;
+}
+
+message DramaShort {
+  int64 id = 1;
+  string cover = 2;
+  string name = 3;
+  string author = 4;
+  string intro = 5;
+  string short_intro = 6;
+}
+
+//工作室相关
+message  Producer  {
+  int64 id = 1;
+  string name = 2;
+  int64 uid = 3;
+  int64 status = 4;
+  string mark = 5;
+  string created_at = 6;
+}
+
+message  ProducerEditReq  {
+  int64 id = 1;
+  string name = 2;
+  int64 uid = 3;
+  int64 status = 4;
+  string mark = 5;
+}
+
+message  ProducerEditResp  {
+  int64 id = 1;
+}
+
+
+//工作室相关
+message  ProducerDictResp  {
+  repeated ProducerDict list = 1;
+}
+
+message ProducerAllReq {
+  int64 order = 1;
+}
+
+message ProducerDict {
+  int64 id = 1;
+  string name = 2;
+}
+
+message ProducerAllResp {
+  repeated Producer list = 1;
+}
+
+//推荐相关
+message RecPosition {
+  int64 id = 1;
+  string name = 2;
+  int64 temp_type = 3;
+  int64 sort = 4;
+  string novel_ids = 5;
+  int64 is_del = 6;
+  string created_at = 7;
+  string updated_at = 8;
+}
+
+message RecPositionReq {
+  int64   limit = 1;
+  int64   pageSize = 2;
+}
+message RecPositionResp {
+  repeated RecPosition list = 1;
+}
+
+message RecPositionOpsReq {
+  int64 id = 1;
+}
+
+message RecPositionDataReq {
+  int64 id = 1;
+  string name = 2;
+  string novel_ids = 3;
+  int64 sort = 4;
+  int64 temp_type = 5;
+}
+
+message RecPositionAddReq {
+  string name = 1;
+  string novel_ids = 2;
+  int64 sort = 3;
+  int64 temp_type = 4;
+}
+
+message RecPositionOpsResp {
+  int64 id = 1;
+}
+
+message CollDramaReq {
+  string uid = 1;
+  int64 did = 2;
+  int64 status = 3;
+}
+
+message CheckCollDramaReq {
+  string uid = 1;
+  int64 did = 2;
+}
+
+message CheckCollDramaResp {
+  int64 is_follow = 1;
+}

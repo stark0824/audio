@@ -1,0 +1,12 @@
+Name: admin-api
+Host: 0.0.0.0
+Port: 2080
+Log:
+  ServiceName: admin-api
+  KeepDays: 7
+  Stat: false
+DramaRpcConf:
+  Etcd:
+    Hosts:
+      - 172.23.0.2:2379
+    key: cpdramaadmin.rpc

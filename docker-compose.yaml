@@ -1,0 +1,26 @@
+version: '2'
+
+networks:
+  app-tier:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.22.0.0/16
+
+services:
+  api:
+    container_name: api
+    networks:
+      - app-tier
+    image: audio-api:v2
+    restart: always
+    ports:
+      - 2080:2080
+  drama-rpc:
+    container_name: drama-rpc
+    networks:
+      - app-tier
+    image: drama-rpc:v3
+    restart: always
+    ports:
+      - 3080:3080

@@ -1,0 +1,159 @@
+syntax = "proto3";
+package cp;
+
+option go_package ="./cp;cp";
+
+import "message/user.proto";
+import "message/common.proto";
+import "message/admin.proto";
+
+service UserInternal {
+  rpc uid (UserInternalParams.Token) returns (UserInternalParams.Uid);
+  rpc info (UserInternalParams.Token) returns (cp.UserCommon.InfoUser);
+  rpc info_from_uid (UserInternalParams.FromUidReq) returns (cp.UserCommon.InfoUser);
+  rpc simple_map (UserInternalParams.UserIds) returns (UserInternalParams.SimpleUserMap);
+  rpc basic_map (UserInternalParams.UserIds) returns (UserInternalParams.BasicUserMap);
+  rpc binding_info (UserInternalParams.Uid) returns (cp.UserCommon.BindingInfo);
+  // 检测是否被禁言
+  rpc check_forbid_talk (UserInternalParams.CheckForbidTalk) returns (cp.BooleanValue);
+
+  // 昵称搜索，用户后台搜索， limit 100
+  rpc search_nickname(UserInternalParams.SearchNicknameReq) returns (UserInternalParams.SearchNicknameRes);
+  rpc subscription_relation(UserInternalParams.SubscriptionRelationReq) returns (UserInternalParams.SubscriptionRelationRes);
+
+  // 获取后台 mid 判断登录
+  rpc admin_mid(UserInternalParams.AdminMidReq) returns (UserInternalParams.AdminMidRes);
+  // 获取后台 manager map
+  rpc admin_manager_name_map(cp.Empty) returns (UserInternalParams.AdminManagerNameMapRes);
+  // 检测后台权限
+  rpc admin_auth(UserInternalParams.AdminAuthReq) returns (UserInternalParams.AdminAuthRes);
+
+  // PHP同步用户关系，兼容旧版APP
+  rpc follow(UserInternalParams.FollowReq) returns (cp.Empty);
+  // PHP获取我的关注
+  rpc follows(UserInternalParams.FollowsReq) returns (UserInternalParams.FollowsRes);
+  // PHP获取我的粉丝
+  rpc fans(UserInternalParams.Uid) returns (UserInternalParams.BasicUserMap);
+  // PHP 更新用户缓存
+  rpc sync(UserInternalParams.UserIds) returns (cp.Empty);
+  rpc sync_product(UserInternalParams.UserIds) returns (cp.Empty);
+  rpc sync_level(UserInternalParams.UserIds) returns (cp.Empty);
+  rpc sync_word_number(UserInternalParams.UserIds) returns (cp.Empty);
+  rpc sync_base(UserInternalParams.UserIds) returns (cp.Empty);
+  // 设置认证
+  rpc set_identity(UserInternalParams.SetIdentityReq) returns (cp.Empty);
+}
+
+message UserInternalParams {
+  message Token {
+    string token = 1;
+  }
+
+  message Uid {
+    uint32 uid = 1;
+  }
+
+  message UserIds {
+    repeated uint32 ids = 1;
+  }
+
+  message SimpleUserMap {
+    map<uint32, cp.UserCommon.SimpleUser> map = 1;
+  }
+
+  message BasicUserMap {
+    map<uint32, cp.UserCommon.BasicUser> map = 1;
+  }
+
+  message FromUidReq {
+    // 需要获取用的 uid
+    uint32 uid = 1;
+    // 另一个 uid，用于查询 `other_uid` 与 `uid` 的关系
+    uint32 my_uid = 2;
+  }
+
+  message FollowReq {
+    uint32 uid = 1;
+    uint32 other_uid = 2;
+    // 设置关系
+    cp.UserCommon.Relation relation = 3;
+  }
+
+  message FollowsReq {
+    uint32 uid = 1;
+    // 接口返回参数
+    uint32 lid = 3;
+  }
+  message FollowsRes {
+    repeated cp.UserCommon.BasicUser list = 1;
+    map<uint32, uint32> aid_map = 2;
+    // 作为获取下一页的接口参数
+    uint32 lid = 3;
+  }
+
+  // admin_mid
+  message AdminMidReq {
+    // session id
+    string session = 1;
+  }
+  message AdminMidRes {
+    uint32 mid = 1;
+  }
+
+  // admin_manager_map
+  message AdminManagerNameMapRes {
+    map<uint32, string> map = 1;
+  }
+
+  // admin_auth
+  message AdminAuthReq {
+    // 控制器
+    string controller = 1;
+    // 方法
+    string action = 2;
+    // 参数
+    string param = 3;
+    // session id
+    string session = 4;
+  }
+  message AdminAuthRes {
+    uint32 mid = 1;
+    bool auth = 2;
+  }
+
+  // 关键字搜索
+  message SearchNicknameReq {
+    string nickname = 1;
+    cp.AdminCommon.SqlOperator operator = 2;
+  }
+  message SearchNicknameRes {
+    map<uint32, string> map = 1;
+  }
+
+  // set_identity
+  message SetIdentityReq {
+    repeated uint32 ids = 1;
+    cp.UserCommon.Identity identity = 2;
+  }
+
+  // subscription_relation
+  message SubscriptionRelationReq {
+    // 关注者、拉黑者UID
+    uint32 uid = 1;
+    // 被关注者、被拉黑者UID
+    uint32 other_uid = 2;
+  }
+  message SubscriptionRelationRes {
+    cp.UserCommon.Relation relation = 1;
+    // 反向关系
+    cp.UserCommon.Relation reverse = 2;
+  }
+
+  // 检测是否被禁言
+  message CheckForbidTalk {
+    // 需要检测的禁言类型
+    cp.UserCommon.ForbidTalkRange range = 1;
+    // 需要检测的用户ID
+    uint32 uid = 2;
+  }
+}

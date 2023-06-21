@@ -1,0 +1,53 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: cp-audio-x
+data:
+  "clientApi.yaml": |
+    Name: admin-api
+    Host: 0.0.0.0
+    Port: 2080
+    Log:
+      ServiceName: admin-api
+      KeepDays: 7
+      Stat: false
+    DramaRpcConf: 
+      Endpoints:
+        - 127.0.0.1:3080
+
+  "userRpc.yaml": |
+    app:
+      host: cp-user:1081
+      ssl: false
+
+  "dramaRpc.yaml": |
+    Name: cpdramaadmin.rpc
+    ListenOn: 0.0.0.0:3080
+    Mode: dev
+    Log:
+      ServiceName: drama-rpc
+      KeepDays: 7
+      Stat: false
+    DB:
+      DataSource: work:cp2018csq123456@tcp(172.17.142.131:3306)/cp_audio?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+    
+    SqlCache:
+      - Host: redis-app-0.redis-service:6379
+        Pass:
+        Type: node
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cp-audio-x
+  labels:
+    app: cp-audio-x
+spec:
+  ports:
+    - port: 2080
+      name: api
+    - port: 3080
+      name: cpdramaadmin
+  selector:
+    app: cp-audio-x
